@@ -1,20 +1,41 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
-</div>
+# 📧 직장인 메일 비서 (Office Mail Assistant)
 
-# Run and deploy your AI Studio app
+**"보내기 전에 이거 돌리면 메일 퀄리티 달라집니다"**
 
-This contains everything you need to run your app locally.
+직장 생활하면서 가장 고민되는 순간 중 하나, 바로 **메일 작성**이죠. 
+상사에게 보고할 때, 외부 업체에 협조를 구할 때, 혹은 동료에게 가벼운 부탁을 할 때... 
+어떻게 써야 예의 바르면서도 핵심을 잘 전달할 수 있을지 고민된다면?
 
-View your app in AI Studio: https://ai.studio/apps/7010ae72-ceb2-4360-9c6d-d85762b24d78
+이제 **직장인 메일 비서**에게 맡겨주세요! 🚀
 
-## Run Locally
+---
 
-**Prerequisites:**  Node.js
+## ✨ 이런 분들께 추천해요!
+- 📝 메일 첫 문장 쓰기가 너무 힘드신 분
+- 😤 화가 나서 쓴 메일을 정중하게 다듬고 싶으신 분
+- ⏰ 바쁜 업무 중에 메일 작성 시간을 줄이고 싶으신 분
+- 🌏 영어 메일 작성이 부담스러운 분
 
+---
 
-1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
+## 🛠 사용 방법 (아주 쉬워요!)
+
+1. **원문 입력**: 다듬고 싶은 내용을 자유롭게 적어주세요. (대충 적어도 찰떡같이 알아듣습니다!)
+2. **말투(Tone) 설정**: 상황에 맞는 말투를 골라보세요.
+   - *정중한*: 상사나 외부 업체용
+   - *부드러운*: 동료나 협업 부서용
+   - *간결한*: 핵심만 빠르게!
+   - *설득력 있음*: 협조가 필요할 때
+3. **변환하기**: '비즈니스 메일로 변환' 버튼을 클릭!
+4. **복사 & 붙여넣기**: 완성된 메일을 복사해서 바로 사용하세요.
+
+---
+
+## 💡 팁
+- **언어 설정**: 한국어뿐만 아니라 영어 메일로도 바로 변환이 가능합니다.
+- **최근 기록**: 이전에 변환했던 메일들을 사이드바에서 다시 확인할 수 있어요.
+
+---
+
+**직장인 여러분의 칼퇴를 응원합니다!** 
+Made by 개발자지니 💻

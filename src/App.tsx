@@ -275,7 +275,7 @@ export default function App() {
 
       {/* Footer */}
       <footer className="mt-12 text-slate-400 text-xs font-medium">
-        © {new Date().getFullYear()} 직장인 메일 비서. Powered by Gemini AI.
+        © {new Date().getFullYear()} 직장인 메일 비서 made by 개발자지니. Powered by Gemini AI.
       </footer>
     </div>
   );
