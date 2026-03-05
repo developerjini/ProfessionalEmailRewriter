@@ -3,19 +3,20 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { 
-  Send, 
-  Copy, 
-  Check, 
-  RefreshCw, 
-  Mail, 
-  Languages, 
+import {
+  Send,
+  Copy,
+  Check,
+  RefreshCw,
+  Mail,
   MessageSquareText,
   Sparkles,
   ChevronRight,
-  History
+  History,
+  X,
+  Clock
 } from 'lucide-react';
 import { rewriteText, Tone, RewriteOptions } from './services/geminiService';
 import Markdown from 'react-markdown';
@@ -33,6 +34,26 @@ interface HistoryItem {
   timestamp: number;
 }
 
+const HISTORY_STORAGE_KEY = 'email-rewriter-history';
+
+function loadHistory(): HistoryItem[] {
+  try {
+    const raw = localStorage.getItem(HISTORY_STORAGE_KEY);
+    if (!raw) return [];
+    return JSON.parse(raw) as HistoryItem[];
+  } catch {
+    return [];
+  }
+}
+
+function saveHistory(history: HistoryItem[]) {
+  try {
+    localStorage.setItem(HISTORY_STORAGE_KEY, JSON.stringify(history));
+  } catch {
+    // localStorage 사용 불가 환경에서는 무시
+  }
+}
+
 export default function App() {
   const [input, setInput] = useState('');
   const [output, setOutput] = useState('');
@@ -40,24 +61,31 @@ export default function App() {
   const [tone, setTone] = useState<Tone>('formal');
   const [language, setLanguage] = useState<'ko' | 'en'>('ko');
   const [copied, setCopied] = useState(false);
-  const [history, setHistory] = useState<HistoryItem[]>([]);
+  const [history, setHistory] = useState<HistoryItem[]>(loadHistory);
   const [showHistory, setShowHistory] = useState(false);
+
+  useEffect(() => {
+    saveHistory(history);
+  }, [history]);
 
   const handleRewrite = async () => {
     if (!input.trim() || isLoading) return;
 
     setIsLoading(true);
     try {
-      const result = await rewriteText(input, { tone, language });
+      const result = await rewriteText(input, { tone, language } satisfies RewriteOptions);
       if (result) {
         setOutput(result);
         const newItem: HistoryItem = {
-          id: Math.random().toString(36).substring(7),
+          id: Math.random().toString(36).substring(2),
           original: input,
           rewritten: result,
           timestamp: Date.now(),
         };
-        setHistory(prev => [newItem, ...prev].slice(0, 10));
+        setHistory(prev => {
+          const updated = [newItem, ...prev].slice(0, 10);
+          return updated;
+        });
       }
     } catch (error) {
       alert(error instanceof Error ? error.message : 'An error occurred');
@@ -68,9 +96,12 @@ export default function App() {
 
   const copyToClipboard = useCallback(() => {
     if (!output) return;
-    navigator.clipboard.writeText(output);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
+    navigator.clipboard.writeText(output).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    }).catch(() => {
+      alert('클립보드 복사에 실패했습니다. 직접 텍스트를 선택해 복사해 주세요.');
+    });
   }, [output]);
 
   const tones: { value: Tone; label: string; description: string }[] = [
@@ -84,7 +115,7 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-[#f8f9fa] flex flex-col items-center py-12 px-4 sm:px-6 lg:px-8">
-      <motion.div 
+      <motion.div
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         className="w-full max-w-4xl"
@@ -100,10 +131,11 @@ export default function App() {
               <p className="text-sm text-slate-500 font-medium">보내기 전에 이거 돌리면 메일 퀄리티 달라집니다</p>
             </div>
           </div>
-          
-          <button 
+
+          <button
             onClick={() => setShowHistory(!showHistory)}
             className="p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-full transition-colors relative"
+            aria-label="히스토리 보기"
           >
             <History className="w-5 h-5" />
             {history.length > 0 && (
@@ -117,13 +149,13 @@ export default function App() {
           <div className="lg:col-span-8 space-y-6">
             {/* Input Section */}
             <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
-              <div className="px-6 py-4 border-bottom border-slate-100 flex items-center justify-between bg-slate-50/50">
+              <div className="px-6 py-4 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
                 <div className="flex items-center gap-2 text-slate-600 font-semibold text-sm">
                   <MessageSquareText className="w-4 h-4" />
                   원문 입력
                 </div>
                 <div className="flex items-center gap-2">
-                  <button 
+                  <button
                     onClick={() => setLanguage('ko')}
                     className={cn(
                       "px-3 py-1 text-xs font-bold rounded-lg transition-all",
@@ -132,7 +164,7 @@ export default function App() {
                   >
                     KOR
                   </button>
-                  <button 
+                  <button
                     onClick={() => setLanguage('en')}
                     className={cn(
                       "px-3 py-1 text-xs font-bold rounded-lg transition-all",
@@ -155,8 +187,8 @@ export default function App() {
                   disabled={!input.trim() || isLoading}
                   className={cn(
                     "flex items-center gap-2 px-6 py-2.5 rounded-xl font-bold transition-all shadow-md",
-                    !input.trim() || isLoading 
-                      ? "bg-slate-200 text-slate-400 cursor-not-allowed shadow-none" 
+                    !input.trim() || isLoading
+                      ? "bg-slate-200 text-slate-400 cursor-not-allowed shadow-none"
                       : "bg-indigo-600 text-white hover:bg-indigo-700 active:scale-95 shadow-indigo-200"
                   )}
                 >
@@ -216,8 +248,8 @@ export default function App() {
                     onClick={() => setTone(t.value)}
                     className={cn(
                       "w-full text-left p-4 rounded-xl border transition-all group",
-                      tone === t.value 
-                        ? "border-indigo-600 bg-indigo-50/50 ring-1 ring-indigo-600" 
+                      tone === t.value
+                        ? "border-indigo-600 bg-indigo-50/50 ring-1 ring-indigo-600"
                         : "border-slate-100 hover:border-slate-300 hover:bg-slate-50"
                     )}
                   >
@@ -272,6 +304,88 @@ export default function App() {
           </div>
         </div>
       </motion.div>
+
+      {/* History Modal */}
+      <AnimatePresence>
+        {showHistory && (
+          <>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setShowHistory(false)}
+              className="fixed inset-0 bg-black/40 z-40"
+            />
+            <motion.div
+              initial={{ opacity: 0, x: 320 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: 320 }}
+              transition={{ type: 'spring', damping: 25, stiffness: 300 }}
+              className="fixed top-0 right-0 h-full w-full max-w-sm bg-white shadow-2xl z-50 flex flex-col"
+            >
+              <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100">
+                <h2 className="text-base font-bold text-slate-900 flex items-center gap-2">
+                  <History className="w-4 h-4 text-indigo-500" />
+                  전체 히스토리 ({history.length})
+                </h2>
+                <button
+                  onClick={() => setShowHistory(false)}
+                  className="p-1.5 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-full transition-colors"
+                  aria-label="닫기"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+              <div className="flex-1 overflow-y-auto p-4 space-y-3">
+                {history.length === 0 ? (
+                  <p className="text-sm text-slate-400 text-center py-12">기록이 없습니다.</p>
+                ) : (
+                  history.map((item) => (
+                    <button
+                      key={item.id}
+                      onClick={() => {
+                        setInput(item.original);
+                        setOutput(item.rewritten);
+                        setShowHistory(false);
+                      }}
+                      className="w-full text-left p-4 rounded-xl border border-slate-100 hover:border-indigo-200 hover:bg-indigo-50/30 transition-all group"
+                    >
+                      <p className="text-xs font-semibold text-slate-700 line-clamp-2 mb-2">
+                        {item.original}
+                      </p>
+                      <p className="text-xs text-slate-400 line-clamp-1 mb-2">
+                        → {item.rewritten}
+                      </p>
+                      <div className="flex items-center gap-1 text-[10px] text-slate-300">
+                        <Clock className="w-3 h-3" />
+                        {new Date(item.timestamp).toLocaleString('ko-KR', {
+                          month: 'numeric',
+                          day: 'numeric',
+                          hour: '2-digit',
+                          minute: '2-digit',
+                        })}
+                      </div>
+                    </button>
+                  ))
+                )}
+              </div>
+              {history.length > 0 && (
+                <div className="px-4 py-3 border-t border-slate-100">
+                  <button
+                    onClick={() => {
+                      setHistory([]);
+                      setShowHistory(false);
+                    }}
+                    className="w-full py-2 text-xs font-bold text-red-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                  >
+                    전체 기록 삭제
+                  </button>
+                </div>
+              )}
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
 
       {/* Footer */}
       <footer className="mt-12 text-slate-400 text-xs font-medium">
