@@ -4,7 +4,7 @@ let aiInstance: GoogleGenAI | null = null;
 
 function getAI() {
   if (!aiInstance) {
-    const apiKey = "GOOGLE_API_KEY";
+    const apiKey = "GEMINI_API_KEY";
     if (!apiKey) {
       throw new Error("Gemini API Key가 설정되지 않았습니다. 환경 변수를 확인해주세요.");
     }
@@ -42,7 +42,7 @@ export async function rewriteText(text: string, options: RewriteOptions) {
   try {
     const ai = getAI();
     const response = await ai.models.generateContent({
-      model: "gemini-3-flash-preview",
+      model: "gemini-2.0-flash",
       contents: text,
       config: {
         systemInstruction,
