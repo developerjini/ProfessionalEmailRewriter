@@ -4,7 +4,7 @@ let aiInstance: GoogleGenAI | null = null;
 
 function getAI() {
   if (!aiInstance) {
-    const apiKey = "AIzaSyBpWnDTk2nxSGoyxnRF2uRbuiITnqHh6CQ";
+    const apiKey = "GOOGLE_API_KEY";
     if (!apiKey) {
       throw new Error("Gemini API Key가 설정되지 않았습니다. 환경 변수를 확인해주세요.");
     }
