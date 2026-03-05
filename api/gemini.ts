@@ -1,4 +1,11 @@
-import type { VercelRequest, VercelResponse } from "@vercel/node";
+import type { IncomingMessage, ServerResponse } from "node:http";
+
+type VercelRequest = IncomingMessage & { body: unknown };
+type VercelResponse = ServerResponse & {
+  status: (code: number) => VercelResponse;
+  json: (body: unknown) => VercelResponse;
+  end: () => VercelResponse;
+};
 
 const ALLOWED_ORIGINS = [
   "https://jinnymac.github.io",
