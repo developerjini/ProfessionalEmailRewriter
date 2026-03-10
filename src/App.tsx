@@ -1,7 +1,7 @@
 import React, { useState, useCallback, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import {
-  Send, Copy, Check, RefreshCw, Mail,
+  Copy, Check, RefreshCw, Mail,
   Sparkles, History, X, Clock, Eye, EyeOff,
   ChevronRight, Trash2, Globe, MessageSquareText,
   AlertCircle,
