@@ -51,10 +51,10 @@ npm run dev
 
 브라우저에서 `http://localhost:5173` 접속
 
-### 4. Anthropic API Key 입력
+### 4. Gemini API Key 입력
 
-- [Anthropic Console](https://console.anthropic.com/api-keys)에서 API Key 발급
-- 앱 상단 입력창에 `sk-ant-...` 형식의 키 입력
+- [Gemini Console](https://aistudio.google.com/api-keys)에서 API Key 발급
+- 앱 상단 입력창에 `Alz-...` 형식의 키 입력
 - API Key는 브라우저 localStorage에만 저장되며 외부로 전송되지 않습니다
 
 ---
@@ -79,7 +79,7 @@ npm run preview
 
 ## 💡 사용 방법
 
-1. **API Key 입력**: Anthropic API Key를 상단에 입력
+1. **API Key 입력**: Gemini API Key를 상단에 입력
 2. **말투 선택**: 상황에 맞는 말투를 사이드바에서 선택
 3. **원문 입력**: 보내고 싶은 내용을 자유롭게 입력
 4. **변환하기**: '비즈니스 메일로 변환' 버튼 클릭 (또는 `⌘ + Enter`)
@@ -93,7 +93,7 @@ npm run preview
 ProfessionalEmailRewriter/
 ├── src/
 │   ├── services/
-│   │   └── claudeService.ts    # Anthropic Claude API 호출
+│   │   └── claudeService.ts    # Gemini API 호출
 │   ├── App.tsx                 # 메인 앱 컴포넌트
 │   ├── main.tsx                # 엔트리포인트
 │   └── index.css               # 전역 스타일
@@ -110,7 +110,7 @@ ProfessionalEmailRewriter/
 
 - API Key는 클라이언트에서 직접 사용되므로, **공개 배포 시 CORS 정책에 유의**하세요.
 - 개인 사용 또는 팀 내부 사용을 권장합니다.
-- Anthropic API 사용 요금이 발생할 수 있습니다.
+- Gemini API 사용 요금이 발생할 수 있습니다.
 
 ---
 
